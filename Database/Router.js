@@ -9,4 +9,6 @@ Router.use(cors());
 Router.use(bodyParser.urlencoded({extended: true}))
 Router.use(express.json())
 
+Router.post("/getUserInfo", Controller.getUserInfo)
+
 module.exports = Router

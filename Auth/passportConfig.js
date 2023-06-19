@@ -17,7 +17,8 @@ passport.use(
                 } else {
                     new UserModel({
                         googleId: profile.id,
-                        displayName: profile.displayName,
+                        name: profile.displayName,
+                        photo: profile.photos[0].value
                     })
                         .save()
                         .then((user) => done(null, user));

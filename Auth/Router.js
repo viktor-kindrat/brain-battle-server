@@ -30,8 +30,7 @@ Router.get(
     '/google/callback',
     passport.authenticate('google', { failureRedirect: '/' }),
     (req, res) => {
-        // Authentication successful, redirect or respond as needed
-        res.redirect('/');
+        res.redirect(`http://localhost:5555/#${req.user._id}`)
     }
 );
 

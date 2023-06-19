@@ -9,7 +9,7 @@ const authRouter = require("./Auth/Router")
 
 let app = express();
 app.use("/", appRouter);
-app.use("/database", dbRouter);
+app.use("/db", dbRouter);
 app.use("/auth", authRouter);
 app.use(express.static(path.join(__dirname, "/", "public")));
 
