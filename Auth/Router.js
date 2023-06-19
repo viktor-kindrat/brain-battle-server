@@ -3,6 +3,8 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const multer  = require('multer')
+const upload = multer({ dest: 'uploads/' })
 
 const passport = require('./passportConfig');
 const Controller = require('./Controller');
@@ -24,12 +26,9 @@ Router.use(
 Router.use(passport.initialize());
 Router.use(passport.session());
 
-Router.get('/google', passport.authenticate('google', { scope: ['profile'] }));
-
-Router.get(
-    '/google/callback',
-    passport.authenticate('google', { failureRedirect: '/' }),
-    Controller.callbackGoogle
-);
+Router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+Router.get('/google/callback', passport.authenticate('google', { failureRedirect: '/' }), Controller.callbackGoogle);
+Router.get("/login", Controller.login)
+Router.get("/register", upload.single("avatar"), Controller.register)
 
 module.exports = Router;

@@ -18,7 +18,8 @@ passport.use(
                     new UserModel({
                         googleId: profile.id,
                         name: profile.displayName,
-                        photo: profile.photos[0].value
+                        photo: profile.photos[0].value,
+                        email: profile._json.email
                     })
                         .save()
                         .then((user) => done(null, user));
