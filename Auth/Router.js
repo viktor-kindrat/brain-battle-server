@@ -29,9 +29,7 @@ Router.get('/google', passport.authenticate('google', { scope: ['profile'] }));
 Router.get(
     '/google/callback',
     passport.authenticate('google', { failureRedirect: '/' }),
-    (req, res) => {
-        res.redirect(`http://localhost:5555/#${req.user._id}`)
-    }
+    Controller.callbackGoogle
 );
 
 module.exports = Router;

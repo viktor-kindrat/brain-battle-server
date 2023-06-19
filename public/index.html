@@ -11,27 +11,24 @@
     <h1>Hello world</h1>
     <a id="signin" href="http://localhost:5555/auth/google">Continue with Google</a>
     <script>
-        window.addEventListener("load", ()=>{
-            let id = localStorage.getItem("id") || null;
-            if (id === null) {
-                localStorage.setItem("id", window.location.hash.substring(1))
-                window.location.replace(window.location.href.slice(0, window.location.href.indexOf("#")))
-            } else {
-                fetch("http://localhost:5555/db/getUserInfo", {
-                    method: "POST",
-                    headers: {
-                        "Content-type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        id: id
-                    })
-                }).then(res=>res.json())
-                .then(data=>{
-                    console.log(data)
-                })
-                .catch(e=>console.log(e))
+        // Parse the JWT from the URL query parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get("token");
+
+        // Store the JWT securely (e.g., in localStorage)
+        localStorage.setItem("token", token);
+
+        console.log(token)
+
+        fetch("http://localhost:5555/db/getUserInfo", {
+            headers: {
+                Authorization: "Bearer " + token
             }
+        }).then(res=>res.json())
+        .then(data=>{
+            console.log(data)
         })
+
     </script>
 </body>
 
