@@ -6,9 +6,10 @@ const bodyParser = require('body-parser');
 const multer  = require('multer')
 const upload = multer({ dest: 'uploads/' })
 
+const jwrReader = require("../Modules/jwtDecoder")
+
 const passport = require('./passportConfig');
 const Controller = require('./Controller');
-const UserModel = require('../Database/Schema/User');
 
 const Router = express();
 Router.use(cors());
@@ -29,6 +30,8 @@ Router.use(passport.session());
 Router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 Router.get('/google/callback', passport.authenticate('google', { failureRedirect: '/' }), Controller.callbackGoogle);
 Router.get("/login", Controller.login)
-Router.get("/register", upload.single("avatar"), Controller.register)
+Router.post("/register", upload.single("avatar"), Controller.register)
+Router.post("/changeData", jwrReader, Controller.changeParametr)
+Router.post("/changeAvatar", jwrReader, upload.single("avatar"), Controller.changePhoto)
 
 module.exports = Router;

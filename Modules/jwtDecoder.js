@@ -15,7 +15,7 @@ const verifyJWT = (req, res, next) => {
         const decoded = jwt.verify(token, jwtsecret);
 
         // Attach the decoded user information to the request object
-        req.user = decoded;
+        req.jwtResult = decoded;
 
         next(); // Proceed to the next middleware
     } catch (error) {
