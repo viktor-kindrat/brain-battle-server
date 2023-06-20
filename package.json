@@ -14,5 +14,28 @@
   },
   "devDependencies": {
     "nodemon": "^2.0.22"
-  }
+  },
+  "name": "brain-battle-server",
+  "description": "the brain battle app server",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/viktor-kindrat/brain-battle-server.git"
+  },
+  "keywords": [
+    "node",
+    "passport",
+    "server"
+  ],
+  "author": "Viktor Kindrat",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/viktor-kindrat/brain-battle-server/issues"
+  },
+  "homepage": "https://github.com/viktor-kindrat/brain-battle-server#readme"
 }
