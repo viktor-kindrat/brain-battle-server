@@ -17,7 +17,7 @@ const User = require("../Database/Schema/User");
 
 class Controller {
     callbackGoogle(req, res) {
-        const data = { data: { ...req.user } }
+        const data = { id: req.user._id }
         const token = jwt.sign(data, jwtsecret, { expiresIn: "1d" })
         const redirectURL = "http://localhost:5555/?token=" + token;
         res.redirect(redirectURL);
