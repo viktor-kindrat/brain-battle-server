@@ -19,7 +19,7 @@ class Controller {
     callbackGoogle(req, res) {
         const data = { id: req.user._id }
         const token = jwt.sign(data, jwtsecret, { expiresIn: "1d" }) 
-        const redirectURL = "http://localhost:5555/?token=" + token;
+        const redirectURL = "https://brainbattle.pp.ua/?token=" + token;
         res.redirect(redirectURL);
     }
     async login(req, res) {
