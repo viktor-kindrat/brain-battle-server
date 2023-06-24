@@ -46,6 +46,7 @@ class Controller {
         const exist = await UserSchema.findOne({ email: data.email });
 
         if (exist) {
+            console.log("exist log")
             res.json({ status: "exists", exist: true })
         } else {
             let newUser;
