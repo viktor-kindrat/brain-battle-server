@@ -48,15 +48,24 @@ class Controller {
         if (exist) {
             res.json({ status: "exists", exist: true })
         } else {
-            let newUser = await new UserSchema({
-                photoFile: {
-                    data: fs.readFileSync(image.path),
-                    contentType: image.mimetype,
-                },
-                name: data.name,
-                email: data.email,
-                password: data.password,
-            })
+            let newUser;
+            if (image) {
+                newUser = await new UserSchema({
+                    photoFile: {
+                        data: fs.readFileSync(image.path),
+                        contentType: image.mimetype,
+                    },
+                    name: data.name,
+                    email: data.email,
+                    password: data.password,
+                })
+            } else {
+                newUser = await new UserSchema({
+                    name: data.name,
+                    email: data.email,
+                    password: data.password,
+                })
+            }
             newUser.save()
             res.json({ status: "ok", exist: false, token: jwt.sign({ id: newUser._id }, jwtsecret, { expiresIn: "1d" }) })
         }
