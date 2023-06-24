@@ -29,7 +29,7 @@ Router.use(passport.session());
 
 Router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 Router.get('/google/callback', passport.authenticate('google', { failureRedirect: '/' }), Controller.callbackGoogle);
-Router.get("/login", Controller.login)
+Router.post("/login", Controller.login)
 Router.post("/register", upload.single("avatar"), Controller.register)
 Router.post("/changeData", jwrReader, Controller.changeParametr)
 Router.post("/changeAvatar", jwrReader, upload.single("avatar"), Controller.changePhoto)
