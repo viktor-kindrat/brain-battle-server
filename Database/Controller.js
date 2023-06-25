@@ -11,7 +11,13 @@ class Controller {
         if (data) {
             const User = await UserSchema.findOne({_id: data})
             if (User) {
-                res.json({status: "ok", data: {User}})
+                const UserClone = await {...User,
+                    photoFile: {
+                        contentType: User.photoFile.contentType,
+                        data: User.photoFile.data.toString("base64")
+                    }
+                }
+                res.json({status: "ok", data: {UserClone}})
             }
         } else {
             res.json("Invalid token")
