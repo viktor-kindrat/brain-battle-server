@@ -11,12 +11,12 @@ class Controller {
         if (data) {
             const User = await UserSchema.findOne({_id: data})
             if (User) {
-                const UserClone = await {...User,
+                const UserClone = await (User.photofile) ? {...User,
                     photoFile: {
                         contentType: User.photoFile.contentType,
                         data: User.photoFile.data.toString("base64")
                     }
-                }
+                } : {...User}
                 res.json({status: "ok", data: {UserClone}})
             }
         } else {
