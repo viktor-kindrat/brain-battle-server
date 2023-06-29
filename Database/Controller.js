@@ -33,8 +33,8 @@ class Controller {
             let user = await UserSchema.findOne({ _id: userId });
             if (user) {
                 const test = req.body;
-                const testExist = [user.tests].filter(item=>item.id === test.id)
-                if (!testExist) {
+                const testExist = [...user.tests].filter(item=>item.id === test.id)
+                if (testExist.length === 0) {
                     user.tests = await [...user.tests, test];
                     user.save();
                     res.json({status: "ok", code: 200})
