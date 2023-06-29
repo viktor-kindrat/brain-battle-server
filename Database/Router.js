@@ -10,7 +10,9 @@ Router.use(cors());
 Router.use(bodyParser.urlencoded({extended: true}))
 Router.use(express.json())
 
-Router.get("/getJwtInfo", jwtDecoder, Controller.getJwtInfo)
-Router.get("/getUserInfo", jwtDecoder, Controller.getUserInfo)
+Router.get("/getJwtInfo", jwtDecoder, Controller.getJwtInfo);
+Router.get("/getUserInfo", jwtDecoder, Controller.getUserInfo);
+Router.post("/recordTest", jwtDecoder, Controller.recordTest);
+Router.post("/removeTest", jwtDecoder, Controller.removeTest);
 
 module.exports = Router

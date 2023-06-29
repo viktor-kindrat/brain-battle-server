@@ -59,12 +59,14 @@ class Controller {
                     name: data.name,
                     email: data.email,
                     password: data.password,
+                    tests: []
                 })
             } else {
                 newUser = await new UserSchema({
                     name: data.name,
                     email: data.email,
                     password: data.password,
+                    tests: []
                 })
             }
             newUser.save()

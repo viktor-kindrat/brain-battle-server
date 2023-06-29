@@ -23,7 +23,8 @@ passport.use(
                                 googleId: profile.id,
                                 name: profile.displayName,
                                 photo: profile.photos[0].value,
-                                email: profile._json.email
+                                email: profile._json.email,
+                                tests: []
                             })
                                 .save()
                                 .then((user) => done(null, user));
