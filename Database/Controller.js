@@ -11,7 +11,8 @@ class Controller {
         if (data) {
             const User = await UserSchema.findOne({ _id: data })
             if (User) {
-                const UserClone = await (User.photoFile) ? {
+                console.log(User)
+                const UserClone = await (User.photoFile.data) ? {
                     ...User,
                     photoFile: {
                         contentType: User.photoFile.contentType,
