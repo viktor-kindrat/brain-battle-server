@@ -32,8 +32,9 @@ app.use(express.static(path.join(__dirname, "/", "public")));
 io.on("connection", (socket) => {
     console.log("New client connected");
     socket.on("create-testing-room", (roomId)=>{
-        socket.join(roomId)
-        socket.emit("created-testing-room", `Testing room with id ${roomId} created`)
+        socket.join(roomId);
+        console.log(`Created room with id ${roomId}`)
+        io.to(roomId).emit("created-testing-room", `Testing room with id ${roomId} created`)
     })
 });
 
