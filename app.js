@@ -31,12 +31,40 @@ app.use(express.static(path.join(__dirname, "/", "public")));
 
 io.on("connection", (socket) => {
     console.log("New client connected");
-    socket.on("create-testing-room", (roomId)=>{
+
+    socket.on("create-testing-room", (roomId) => {
         socket.join(roomId);
-        console.log(`Created room with id ${roomId}`)
-        io.to(roomId).emit("created-testing-room", `Testing room with id ${roomId} created`)
-    })
+        console.log(`Created room with id ${roomId}`);
+        io.to(roomId).emit("created-testing-room", `Testing room with id ${roomId}`);
+
+    });
+    
+    socket.on("join-testing-room", (roomId) => {
+        socket.join(roomId);
+        
+        socket.on("set-username", (username) => {
+            socket.username = username;
+            console.log(`Username set for socket ID ${socket.id}: ${username}`);
+        });
+    
+        socket.on("disconnect", () => {
+            let disconnectedUser = "Anonymous"; // Change const to let
+    
+            if (socket.username) {
+                disconnectedUser = socket.username;
+            }
+    
+            io.to(roomId).emit("user-disconnected", disconnectedUser);
+    
+            console.log(`User ${disconnectedUser} disconnected`);
+        });
+    });
+
+    socket.on("joined-new-user", (roomId) => {
+        io.to(roomId).emit("joined-testing-room", `Someone has joined testing room with id ${roomId}`);
+    });
 });
+
 
 io.on("disconnect", (socket) => {
     console.log("Client disconnected");

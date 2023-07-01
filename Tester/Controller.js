@@ -24,7 +24,7 @@ class Controller {
                             questions: [neededTest[0].questions],
                             initiatorId: userId,
                             respondents: [],
-                            questionId: 0
+                            questionId: -1
                         })
                         await testing.save();
                         res.json({ status: "ok" })
@@ -41,6 +41,20 @@ class Controller {
             }
         } else {
             res.json({ status: "error. token is not provided" })
+        }
+    }
+    
+    async checkIfExist(req, res) {
+        try {
+            let code = req.body.code;
+            let testing = await testingModel.findOne({code: code});
+            if (testing) {
+                res.json({status: "ok", data: true})
+            } else {
+                res.json({status: "ok", data: false})
+            }
+        } catch(e){
+            res.json({ status: "error" })
         }
     }
 
