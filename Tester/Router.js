@@ -18,5 +18,8 @@ Router.post("/getFullTestingData", jwtReader, controller.getFullTestingData);
 Router.post("/switchQuestion", jwtReader, controller.switchQuestion);
 Router.post("/setAnswer", controller.setAnswer);
 Router.post("/checkIfExist", controller.checkIfExist);
+Router.post("/getQuestionsCount", controller.getQuestionsCount);
+Router.post("/getResult", controller.getResult);
+Router.post("/removeTest", jwtReader, controller.removeTest);
 
 module.exports = Router

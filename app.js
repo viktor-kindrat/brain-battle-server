@@ -60,6 +60,19 @@ io.on("connection", (socket) => {
         });
     });
 
+    socket.on("switch-question", (roomId)=>{
+        console.log("question was switched")
+        io.to(roomId).emit("question-switched", roomId)
+    })
+
+    socket.on("test-ended", (roomId)=>{
+        io.to(roomId).emit("test-finished", roomId)
+    })
+
+    socket.on("set-answer", (roomId)=>{
+        io.to(roomId).emit("answer-setted", roomId)
+    })
+
     socket.on("joined-new-user", (roomId) => {
         io.to(roomId).emit("joined-testing-room", `Someone has joined testing room with id ${roomId}`);
     });

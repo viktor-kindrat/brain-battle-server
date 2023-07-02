@@ -43,17 +43,17 @@ class Controller {
             res.json({ status: "error. token is not provided" })
         }
     }
-    
+
     async checkIfExist(req, res) {
         try {
             let code = req.body.code;
-            let testing = await testingModel.findOne({code: code});
+            let testing = await testingModel.findOne({ code: code });
             if (testing) {
-                res.json({status: "ok", data: true})
+                res.json({ status: "ok", data: true })
             } else {
-                res.json({status: "ok", data: false})
+                res.json({ status: "ok", data: false })
             }
-        } catch(e){
+        } catch (e) {
             res.json({ status: "error" })
         }
     }
@@ -85,11 +85,12 @@ class Controller {
         try {
             const data = req.body;
             const testing = await testingModel.findOne({ code: data.code })
-            if (Object.keys(testing).length > 0) {
-                const theSameUser = testing.respondents.filter(respondent => respondent.name === data.name);
+            console.log(testing)
+            if (testing.code) {
+                const theSameUser = [...testing.respondents].filter(respondent => respondent.name === data.name);
                 if (theSameUser.length !== 0) {
-                    testing.respondents = await testing.respondents.filter(resp => resp.name !== data.name)
-                    testing.save();
+                    testing.respondents = await [...testing.respondents].filter(resp => resp.name !== data.name)
+                    testing.save()
                     res.json({ status: "ok" })
                 } else {
                     res.json({ status: "user with the same username does not exist" })
@@ -148,20 +149,20 @@ class Controller {
             const testing = await testingModel.findOne({ code: data.code });
 
             if (testing) {
-                const userExist = testing.respondents.find(resp => resp.name === data.name);
+                const userExist = [...testing.respondents].filter(resp => resp.name === data.name);
 
                 if (userExist) {
                     console.log(userExist);
                     const questionIndex = parseInt(testing.questionId);
                     const variant = testing.questions[0][questionIndex].variants[data.answerId];
 
-                    let newResps = testing.respondents.map(item => {
+                    let newResps = await testing.respondents.map(item => {
                         if (item.name === data.name) {
                             console.log("found");
-                            let answers = item.answers;
+                            let answers = [...item.answers];
 
                             if (answers.length === 0) {
-                                answers = Array(testing.questions[0].length).fill(null); // Initialize answers array with null values
+                                answers = Array(testing.questions[0].length).fill(""); // Initialize answers array with null values
                             }
 
                             answers[questionIndex] = variant.right ? "true" : "false";
@@ -172,10 +173,11 @@ class Controller {
                     });
 
                     console.log(newResps);
-                    testing.respondents = newResps;
+                    testing.respondents = await newResps;
 
-                    testing.save()
-                        .then(() => {
+                    await testing.save()
+                        .then((e) => {
+                            console.log(e)
                             res.json({ status: "ok" });
                         })
                         .catch(error => {
@@ -190,6 +192,74 @@ class Controller {
             }
         } catch (error) {
             console.log(error);
+            res.json({ status: "error" });
+        }
+    }
+
+    async getQuestionsCount(req, res) {
+        try {
+            const data = req.body;
+            const testing = await testingModel.findOne({ code: data.code });
+
+            if (testing) {
+                const userExist = [...testing.respondents].filter(resp => resp.name === data.name);
+
+                if (userExist) {
+                    res.json({ status: "ok", data: testing.questions[0][testing.questionId].variants.length })
+                } else {
+                    res.json({ status: "user with the same username does not exist" });
+                }
+            } else {
+                res.json({ status: "Testing does not exist" });
+            }
+        } catch (e) {
+            console.log(e);
+            res.json({ status: "error" });
+        }
+    }
+
+    async removeTest(req, res) {
+        try {
+            let id = req.jwtResult;
+            let data = req.body;
+            if (id && data.code) {
+                let test = await testingModel.findOne({code: data.code});
+                if (test.code) {
+                    await testingModel.deleteOne({code: data.code})
+                    res.json({status: "ok"})
+                } else {
+                    res.json({status: "Testing does not exist"})
+                }
+            } else {
+                res.json({status: "Missing data"})
+            }
+        } catch (e) {
+            console.log(e)
+            res.json({ status: "error" });
+        }
+    }
+
+    async getResult(req, res) {
+        try {
+            const data = req.body;
+            const testing = await testingModel.findOne({ code: data.code });
+
+            if (testing) {
+                const userExist = [...testing.respondents].filter(resp => resp.name === data.name);
+
+                if (userExist) {
+                    let resps = await [...testing.respondents].sort((a, b) => b.answers.reduce((accumulator, item) => item === "true" ? accumulator + 1 : accumulator, 0) - a.answers.reduce((accumulator, item) => item === "true" ? accumulator + 1 : accumulator, 0));
+                    let place = await [...resps].map((item, index) => (item.name === data.name) ? index : false).filter(item => item !== false)[0] + 1;
+                    let score = await userExist.answers.reduce((accumulator, item) => item === "true" ? accumulator + 1 : accumulator, 0);
+                    res.json({ status: "ok", data: { place: place, score: score } })
+                } else {
+                    res.json({ status: "user with the same username does not exist" });
+                }
+            } else {
+                res.json({ status: "Testing does not exist" });
+            }
+        } catch (e) {
+            console.log(e);
             res.json({ status: "error" });
         }
     }
