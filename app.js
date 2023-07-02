@@ -37,6 +37,21 @@ io.on("connection", (socket) => {
         console.log(`Created room with id ${roomId}`);
         io.to(roomId).emit("created-testing-room", `Testing room with id ${roomId}`);
 
+        socket.on("switch-question", (roomId)=>{
+            console.log("question was switched")
+            io.to(roomId).emit("question-switched", roomId)
+        })
+    
+        socket.on("test-ended", (roomId)=>{
+            io.to(roomId).emit("test-finished", roomId)
+            console.log(`finished at roomid ${roomId}`)
+            socket.leave(roomId)
+        })
+        
+        socket.on("disconnect", ()=>{
+            socket.leave(roomId)
+            io.to(roomId).emit("test-broken", roomId)
+        })
     });
     
     socket.on("join-testing-room", (roomId) => {
@@ -46,9 +61,13 @@ io.on("connection", (socket) => {
             socket.username = username;
             console.log(`Username set for socket ID ${socket.id}: ${username}`);
         });
+
+        socket.on("leave", (roomId)=>{
+            socket.leave(roomId)
+        })
     
         socket.on("disconnect", () => {
-            let disconnectedUser = "Anonymous"; // Change const to let
+            let disconnectedUser = "Anonymous"; 
     
             if (socket.username) {
                 disconnectedUser = socket.username;
@@ -60,15 +79,7 @@ io.on("connection", (socket) => {
         });
     });
 
-    socket.on("switch-question", (roomId)=>{
-        console.log("question was switched")
-        io.to(roomId).emit("question-switched", roomId)
-    })
-
-    socket.on("test-ended", (roomId)=>{
-        io.to(roomId).emit("test-finished", roomId)
-    })
-
+    
     socket.on("set-answer", (roomId)=>{
         io.to(roomId).emit("answer-setted", roomId)
     })

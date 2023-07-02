@@ -1,14 +1,6 @@
 let testingModel = require("../Database/Schema/Test");
 let userModel = require("../Database/Schema/User")
 
-// const TestSchema = new Schema({
-//     code: {type: String, required: true, unique: true},
-//     questions: {type: Array, required: true},
-//     initiatorId: {type: String, required: true},
-//     respondents: {type: Array},
-//     questionId: {type: String}
-// })
-
 class Controller {
     async createTest(req, res) {
         const userId = req.jwtResult.id;
@@ -24,7 +16,8 @@ class Controller {
                             questions: [neededTest[0].questions],
                             initiatorId: userId,
                             respondents: [],
-                            questionId: -1
+                            questionId: -1,
+                            testIdInUser: data.testId
                         })
                         await testing.save();
                         res.json({ status: "ok" })
@@ -220,13 +213,25 @@ class Controller {
 
     async removeTest(req, res) {
         try {
-            let id = req.jwtResult;
+            let id = req.jwtResult.id;
             let data = req.body;
             if (id && data.code) {
                 let test = await testingModel.findOne({code: data.code});
                 if (test.code) {
-                    await testingModel.deleteOne({code: data.code})
-                    res.json({status: "ok"})
+                    let user = await userModel.findOne({_id: id});
+                    if (user.name) {
+                        console.log(test)
+                        let newTests = await [...user.tests].map(item=>item.id === test.testIdInUser ? {...item, testings: [...item.testings, {
+                            respondents: test.respondents
+                        }]} : item);
+                        console.log(newTests)
+                        user.tests = await newTests;
+                        await user.save();
+                        await testingModel.deleteOne({code: data.code})
+                        res.json({status: "ok"})
+                    } else {
+                        res.json({status: "User does not exist"})
+                    }
                 } else {
                     res.json({status: "Testing does not exist"})
                 }
@@ -250,7 +255,9 @@ class Controller {
                 if (userExist) {
                     let resps = await [...testing.respondents].sort((a, b) => b.answers.reduce((accumulator, item) => item === "true" ? accumulator + 1 : accumulator, 0) - a.answers.reduce((accumulator, item) => item === "true" ? accumulator + 1 : accumulator, 0));
                     let place = await [...resps].map((item, index) => (item.name === data.name) ? index : false).filter(item => item !== false)[0] + 1;
-                    let score = await userExist.answers.reduce((accumulator, item) => item === "true" ? accumulator + 1 : accumulator, 0);
+                    console.log("USER", userExist)
+                    let score = await userExist[0].answers.reduce((accumulator, item) => item === "true" ? accumulator + 1 : accumulator, 0);
+                    console.log({ place: place, score: score })
                     res.json({ status: "ok", data: { place: place, score: score } })
                 } else {
                     res.json({ status: "user with the same username does not exist" });
