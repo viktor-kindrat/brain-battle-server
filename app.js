@@ -9,6 +9,20 @@ const dbRouter = require("./Database/Router");
 const authRouter = require("./Auth/Router");
 const testerRouter = require("./Tester/Router");
 const http = require("http");
+let testingModel = require("./Database/Schema/Test");
+
+let removeTest = async (testingCode) => {
+    try {
+        let testing = await testingModel.findOne({code: testingCodet});
+        if (testing?.code) {
+            testingModel.deleteOne({code: testingCode})
+        } else {
+            console.log("testing already does not exist")
+        }
+    } catch (e) {
+        console.log(e)
+    }
+}
 
 let app = express();
 const server = http.createServer(app);
@@ -50,6 +64,7 @@ io.on("connection", (socket) => {
         
         socket.on("disconnect", ()=>{
             socket.leave(roomId)
+            removeTest(roomId)
             io.to(roomId).emit("test-broken", roomId)
         })
     });
