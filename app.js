@@ -13,7 +13,7 @@ let testingModel = require("./Database/Schema/Test");
 
 let removeTest = async (testingCode) => {
     try {
-        let testing = await testingModel.findOne({code: testingCodet});
+        let testing = await testingModel.findOne({code: testingCode});
         if (testing?.code) {
             testingModel.deleteOne({code: testingCode})
         } else {
