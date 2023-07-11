@@ -63,9 +63,9 @@ io.on("connection", (socket) => {
         })
         
         socket.on("disconnect", ()=>{
-            socket.leave(roomId)
             removeTest(roomId)
             io.to(roomId).emit("test-broken", roomId)
+            socket.leave(roomId)
         })
     });
     
