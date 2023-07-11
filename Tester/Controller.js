@@ -111,6 +111,7 @@ class Controller {
                 res.json({ status: "Testing does not exist" })
             }
         } catch (e) {
+            console.log(e)
             res.json({ status: "error" })
         }
     }
