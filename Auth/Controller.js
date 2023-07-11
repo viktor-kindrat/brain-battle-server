@@ -4,7 +4,6 @@ const jwtsecret = process.env.JWTSECRET;
 let fs = require("fs");
 
 const UserSchema = require("../Database/Schema/User");
-const User = require("../Database/Schema/User");
 
 // const UserSchema = new Schema({
 //     googleId : {type: String},
