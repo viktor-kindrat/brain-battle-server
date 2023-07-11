@@ -13,16 +13,18 @@ let testingModel = require("./Database/Schema/Test");
 
 let removeTest = async (testingCode) => {
     try {
-        let testing = await testingModel.findOne({code: testingCode});
-        if (testing?.code) {
-            testingModel.deleteOne({code: testingCode})
+        let testing = await testingModel.findOneAndDelete({ code: testingCode });
+        
+        if (testing) {
+            console.log(`Test with code ${testingCode} successfully removed.`);
         } else {
-            console.log("testing already does not exist")
+            console.log("Test does not exist.");
         }
     } catch (e) {
-        console.log(e)
+        console.log(e);
     }
 }
+
 
 let app = express();
 const server = http.createServer(app);
