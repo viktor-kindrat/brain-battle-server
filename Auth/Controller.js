@@ -18,7 +18,7 @@ class Controller {
     callbackGoogle(req, res) {
         const data = { id: req.user._id }
         const token = jwt.sign(data, jwtsecret, { expiresIn: "1d" }) 
-        const redirectURL = "https://brainbattle.pp.ua/?token=" + token;
+        const redirectURL = "https://brain-battle.netlify.app/?token=" + token;
         res.redirect(redirectURL);
     }
     async login(req, res) {
