@@ -1,4 +1,8 @@
 {
+  "engines": {
+    "node": "18.x",
+    "npm": "8.x"
+  },
   "dependencies": {
     "body-parser": "^1.20.2",
     "cookie-session": "^2.0.0",
